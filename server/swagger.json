@@ -30,31 +30,25 @@
         "description": "email, password로 회원가입",
         "operationId": "registerUser",
         "consumes": [
-          "application/json"
+          "application/json",
+          "application/x-www-form-urlencoded"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "회원가입 정보",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "test@user.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "secrert_word",
-                  "description": "6글자 이상 입력 필요"
-                }
-              }
-            }
+            "in": "formData",
+            "name": "email",
+            "type": "string",
+            "description": "이메일",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "password",
+            "type": "string",
+            "description": "비밀번호(6글자 이상)"
           }
         ],
         "responses": {
@@ -178,7 +172,7 @@
         },
         "email": {
           "type": "integer",
-          "format": "int64"
+          "example": "testuser@site.com"
         }
       }
     },
