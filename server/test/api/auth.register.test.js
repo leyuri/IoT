@@ -2,6 +2,16 @@ const request = require('supertest');
 const app = require('../../app');
 const db = require('../../models')
 
+// db user 데이터 초기화
+beforeAll(() => {
+});
+  
+afterEach(async (done) => {
+    await db.User.destroy({ truncate: true, cascade: true });
+    done();
+});
+
+
 
 it('should return 200 for successful registeration', (done) => {
     request(app).post('/api/auth/register')
@@ -37,6 +47,7 @@ it('should make a new user after registration', async (done) => {
     expect(user).toBeNull();
     const resp = await request(app).post('/api/auth/register')
       .send({ email: 'test@test.com', password: 'passpass' });
+    console.log(resp.body);
     user = await db.User.findOne({ where: { email: 'test@test.com' } });
     expect(user).not.toBeNull();
     done();
