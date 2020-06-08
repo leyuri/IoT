@@ -29,7 +29,7 @@ it('should return token after registeration', async (done) => {
     expect(resp.body.token).toBeTruthy();
 
     expect(() => {
-        jwt.verify(resp.body.token, config.JWT_KEY);
+        jwt.verify(resp.body.token, config.secret);
     }).not.toThrow();
     done();
 
