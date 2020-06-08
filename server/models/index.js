@@ -9,12 +9,13 @@ const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
 let sequelize;
+// 데이터베이스 접속이 안되었으면 접속하고
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
-
+// 이 밑에 있는 파일들을 읽어서
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -22,7 +23,9 @@ fs
   })
   .forEach(file => {
     const model = sequelize['import'](path.join(__dirname, file));
+    // db 밑에 있는 모델 이름으로 해서 다 붙여 넣는다
     db[model.name] = model;
+
   });
 
 Object.keys(db).forEach(modelName => {
