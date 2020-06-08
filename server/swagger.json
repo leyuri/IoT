@@ -3,14 +3,14 @@
   "info": {
     "description": "Hello world",
     "version": "1.0.0",
-    "title": "Swagger Petstore"
+    "title": "Sensor Server"
   },
   "host": "localhost:3000",
   "basePath": "/api",
   "tags": [
     {
       "name": "auth",
-      "description": "About user authentication"
+      "description": "사용자 인증 관련"
     },
     {
       "name": "device",
@@ -30,25 +30,31 @@
         "description": "email, password로 회원가입",
         "operationId": "registerUser",
         "consumes": [
-          "application/json",
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "formData",
-            "name": "email",
-            "type": "string",
-            "description": "이메일",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "name": "password",
-            "type": "string",
-            "description": "비밀번호(6글자 이상)"
+            "in": "body",
+            "name": "body",
+            "description": "로그인 정보",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@user.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "secret_word",
+                  "description": "6글자 이상 입력 필요"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -62,14 +68,14 @@
                 },
                 "token": {
                   "type": "string",
-                  "example": "ASDFAESFADSASDFDSAFS_ASEFA",
+                  "example": "ASDKLGJASDFGA_ASDGFASDG",
                   "description": "JSON Web Token"
                 }
               }
             }
           },
           "405": {
-            "description": "Invalid email or passwordxc"
+            "description": "Invalid email or password"
           }
         }
       }
@@ -103,7 +109,7 @@
                 },
                 "password": {
                   "type": "string",
-                  "example": "secrert_word",
+                  "example": "secret_word",
                   "description": "6글자 이상 입력 필요"
                 }
               }
@@ -112,7 +118,7 @@
         ],
         "responses": {
           "200": {
-            "description": "로그인 성공",
+            "description": "회원가입 성공",
             "schema": {
               "type": "object",
               "properties": {
@@ -121,14 +127,14 @@
                 },
                 "token": {
                   "type": "string",
-                  "example": "ASDFAESFADSASDFDSAFS_ASEFA",
+                  "example": "ASDKLGJASDFGA_ASDGFASDG",
                   "description": "JSON Web Token"
                 }
               }
             }
           },
           "405": {
-            "description": "Invalid email or passwordxc"
+            "description": "Invalid email or password"
           }
         }
       }
@@ -153,6 +159,77 @@
           }
         }
       }
+    },
+    "/devices/{id}/record": {
+      "post": {
+        "tags": [
+          "device"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "device's id"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "센싱값",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "t": {
+                  "type": "number",
+                  "example": 19.23,
+                  "description": "temperature"
+                },
+                "at": {
+                  "type": "integer",
+                  "example": 1591608396,
+                  "description": "sensing time (UTC Epoch)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          }
+        }
+      }
+    },
+    "/devices/{id}": {
+      "get": {
+        "tags": [
+          "device"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "device's id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공",
+            "schema": {
+              "$ref": "#/definitions/Device"
+            }
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -171,24 +248,26 @@
           "format": "int64"
         },
         "email": {
-          "type": "integer",
+          "type": "string",
           "example": "testuser@site.com"
         }
       }
     },
-    "Category": {
+    "Device": {
       "type": "object",
       "properties": {
         "id": {
           "type": "integer",
           "format": "int64"
         },
-        "name": {
-          "type": "string"
+        "t": {
+          "type": "number",
+          "example": 18.3
+        },
+        "at": {
+          "type": "integer",
+          "example": 1591608396
         }
-      },
-      "xml": {
-        "name": "Category"
       }
     },
     "ApiResponse": {
