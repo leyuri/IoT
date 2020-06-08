@@ -24,3 +24,10 @@ it('should return 400 error if email is missing', (done) => {
         .expect(400, done);
 })
 
+it('should return 400 error if password is missing', (done) => {
+    request(app).post('/api/auth/register')
+        .send({email: 'passpass'})
+        .expect(400, done);
+})
+
+
