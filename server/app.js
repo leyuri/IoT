@@ -23,13 +23,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 // 라우팅 걸어주기
+app.use('/', indexRouter);
+app.use('/api', require('./api'));
+// api 디렉토리에서 처리를 하도록
+app.use('/users', usersRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-// app.use('/api/auth/register', (req, res, next) => {
-//   res.json({ok: "OK"});
-// })
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
