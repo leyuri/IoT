@@ -1,6 +1,8 @@
 const request = require('supertest');
 const app = require('../../app');
 const db = require('../../models')
+const jwt = require("jsonwebtoken");
+const config = require("../../config/config.js");
 
 // db user 데이터 초기화
 beforeAll(() => {
@@ -20,13 +22,17 @@ it('should return 200 for successful registeration', (done) => {
 
 })
 
-it('should return token after registeration', (done) => {
-    request(app).post('/api/auth/register')
+it('should return token after registeration', async (done) => {
+    const resp = await request(app)
+        .post('/api/auth/register')
         .send({email: 'test@test.com', password: 'passpass'})
-        .then(resp => {
-            expect(resp.body.token).toBeTruthy();
-            done();
-        })
+    expect(resp.body.token).toBeTruthy();
+
+    expect(() => {
+        jwt.verify(resp.body.token, config.JWT_KEY);
+    }).not.toThrow();
+    done();
+
 })
 
 it('should return 400 error if email is missing', (done) => {
