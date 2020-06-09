@@ -18,3 +18,16 @@ it('should encode password after creating', async (done) => {
   expect(user.validatePassword('password1')).toBe(false);
   done();
 });
+
+
+// model 테스트
+it('should not contain password in JSON', async (done) => {
+  const user = await db.User.create({
+    email: '1@com', password: 'password'
+  });
+  expect(user.toJSON().password).toBeUndefined();
+  done();
+})
+
+
+

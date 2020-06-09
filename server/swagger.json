@@ -74,8 +74,8 @@
               }
             }
           },
-          "405": {
-            "description": "Invalid email or password"
+          "400": {
+            "description": "001: Invalid email or password / 002: Duplication email"
           }
         }
       }
