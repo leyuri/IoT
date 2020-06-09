@@ -35,6 +35,19 @@ it('should return token after registeration', async (done) => {
 
 })
 
+// 동일한 이메일이 있을 경우 400 에러가 넘어오도록 한다
+it('should return 400 if there is the same email', async (done) => {
+    await db.User.create({
+      email: 'test@test.com', password: 'test'  });
+    request(app).post('/api/auth/register')
+      .send({ email: 'test@test.com', password: 'passpass' })
+      .expect(400)
+      .then(resp => {
+        expect(resp.body.message).toBe('email is taken');
+        done();
+      });
+  });
+
 it('should return 400 error if email is missing', (done) => {
     request(app).post('/api/auth/register')
         .send({password: 'passpass'})

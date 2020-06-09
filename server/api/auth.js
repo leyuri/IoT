@@ -1,3 +1,4 @@
+
 const db = require('../models');
 var jwt = require('jsonwebtoken');
 const secret = require('../config/config.js').secret;
@@ -10,15 +11,22 @@ async function register(req, res, next) {
     return res.status(400).json({ message: 'password is missing' });
   }
 
-  const user = await db.User.create({
-    email: req.body.email,
-    password: req.body.password
-  });
+  try {
+    const user = await db.User.create({
+      email: req.body.email,
+      password: req.body.password
+    });
+    return res.status(200).json({
+      user,
+      token: jwt.sign({ email: user.email }, secret, { expiresIn: '1h' })
+    });
 
-  res.json({ 
-    user, 
-    token: jwt.sign({ email: user.email }, secret, { expiresIn: '1h' })
-  });
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({message: 'email is taken'});
+    }
+    next(err);
+  }
 }
 
 module.exports = {
